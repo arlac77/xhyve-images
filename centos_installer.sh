@@ -3,17 +3,23 @@
 # http://www.admin-magazin.de/Online-Artikel/CentOS-virtualisiert-in-Xhyve-auf-OS-X
 # https://www.notfound.me/archives/18
 
-VERSION=7.3.1611
-ISO=CentOS-7-x86_64-Minimal-1611.iso
+MAYOR=7
+MINOR=1708
+#MINOR=1611
+VERSION=${MAYOR}.3.${MINOR}
+ISO=CentOS-${MAYOR}-x86_64-Minimal-${MINOR}.iso
 VOLUME="CentOS 7 x86_64"
 DEST="centos-${VERSION}"
-IMAGE_SIZE=6
+IMAGE_SIZE=8
+
+
 
 if  [ -f ${ISO} ]
 then
   echo "${ISO} schon da"
 else
-  curl -O http://centos.copahost.com/${VERSION}/isos/x86_64/${ISO}
+  curl -O http://mirror.daniel-jost.net/centos/${MAYOR}/isos/x86_64/${ISO}
+  #curl -O http://centos.copahost.com/${VERSION}/isos/x86_64/${ISO}
 fi
 
 
@@ -56,7 +62,7 @@ sudo xhyve $MEM $SMP $PCI_DEV $LPC_DEV $NET $IMG_CD $IMG_HDD -f kexec,$KERNEL,$I
 
 
 ## cd /mnt/sysimage/boot/
-## python -m SimpleHTTPServer 
+## python -m SimpleHTTPServer
 
 # curl -O 192.168.64.7:8000/vmlinuz-3.10.0-514.el7.x86_64
 # curl -O 192.168.64.7:8000/initramfs-3.10.0-514.el7.x86_64.img
