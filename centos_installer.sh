@@ -12,20 +12,17 @@ VOLUME="CentOS 7 x86_64"
 DEST="centos-${VERSION}"
 IMAGE_SIZE=8
 
-
-
 if  [ -f ${ISO} ]
 then
-  echo "${ISO} schon da"
+  echo "${ISO} already there"
 else
   curl -O http://mirror.daniel-jost.net/centos/${MAYOR}/isos/x86_64/${ISO}
-  #curl -O http://centos.copahost.com/${VERSION}/isos/x86_64/${ISO}
 fi
 
 
 if  [ -f ${DEST}/vmlinuz ]
 then
-  echo "${DEST}/vmlinuz schon da"
+  echo "${DEST}/vmlinuz already there"
 else
   dd if=/dev/zero bs=2k count=1 of=installer.iso
   dd if=${ISO} bs=2k skip=1 >>installer.iso
@@ -44,7 +41,7 @@ fi
 
 if  [ -f ${DEST}/hdd.img ]
 then
-  echo "${DEST}/hdd.img schon da"
+  echo "${DEST}/hdd.img already there"
 else
   dd if=/dev/zero of=${DEST}/hdd.img bs=1g count=${IMAGE_SIZE}
 fi
