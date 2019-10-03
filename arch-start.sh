@@ -11,8 +11,8 @@ echo $DISK
 
 sudo xhyve \
     -A \
-    -c 1 \
-    -m 4G \
+    -c 4 \
+    -m 8G \
     -s 0,hostbridge \
     -s 2,virtio-net \
     -s 4,virtio-blk,${DISK} \

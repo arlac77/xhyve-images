@@ -48,9 +48,30 @@ cat >/mnt/root/.ssh/authorized_keys<<EOF
 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPzHP3wE8qlmB9QLwKMK5dIb/Azej+aIg6UmL6YRoHE51ISI4SQc6gBYCfucB9isVns/ucejDRdVQBtthZd/RTM= markus@pro
 EOF
 
+cat >/mnt/etc/systemd/network/enp0s2.network <<EOF
+[Match]
+Name=enp0s2
+
+[Network]
+DHCP=ipv4
+EOF
+
+cat >/mnt/etc/resolv.conf <<EOF
+nameserver 10.0.0.20
+nameserver fd00::c225:6ff:fee2:8a78
+search mf.de
+EOF
+
 arch-chroot /mnt
+systemctl start systemd-networkd.service
+systemctl enable systemd-networkd.service
+systemctl set-default multi-user.target
+systemctl enable sshd
+
 passwd
+
 exit
+
 
 
 ip link show dev enp0s2
@@ -59,6 +80,6 @@ ip address add 192.168.64.2/24 broadcast + dev enp0s2
 
 ip route add 0/32 via 192.168.64.1 dev enp0s2
 
-ip link
-ifconfig -a
+
+pacman -Syu
 systemctl start sshd
