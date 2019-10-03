@@ -23,6 +23,9 @@
 
 DISK_SIZE=6G
 DISK_IMAGE=linux.img
+UUID=61CF84A9-E75E-4237-9D21-285EE98D114D
+CPUS=1
+MEMORY=2G
 
 set -euo pipefail
 IFS=$'\n\t'
@@ -57,6 +60,7 @@ label=$(basename $mnt)
 disk=$(echo "$diskinfo" |  cut -d' ' -f1)
 hdiutil eject "$disk"
 rm tmp.iso
+
 
 sudo xhyve \
     -A \
