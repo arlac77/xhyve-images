@@ -22,7 +22,7 @@
 # sudo needed if you want virtio-net
 
 DISK_SIZE=5G
-DISK=disk.img
+DISK=linux.img
 
 set -euo pipefail
 IFS=$'\n\t'

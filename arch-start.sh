@@ -7,6 +7,8 @@ MACHINE=$1
 
 DISK=${MACHINE}/linux.img
 
+echo $DISK
+
 sudo xhyve \
     -A \
     -c 1 \

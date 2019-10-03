@@ -52,5 +52,13 @@ arch-chroot /mnt
 passwd
 exit
 
+
+ip link show dev enp0s2
+ip link set enp0s2 up
+ip address add 192.168.64.2/24 broadcast + dev enp0s2
+
+ip route add 0/32 via 192.168.64.1 dev enp0s2
+
+ip link
 ifconfig -a
 systemctl start sshd
