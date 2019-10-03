@@ -21,8 +21,8 @@
 #
 # sudo needed if you want virtio-net
 
-DISK_SIZE=5G
-DISK=linux.img
+DISK_SIZE=6G
+DISK_IMAGE=linux.img
 
 set -euo pipefail
 IFS=$'\n\t'
@@ -32,13 +32,13 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
-if [ -f Arch.img ]; then
-    echo "existing Arch.img disk aborting"
+if [ -f ${DISK_IMAGE} ]; then
+    echo "existing ${DISK} disk aborting"
     exit 1
 fi
 
-echo "creating a ${DISK_SIZE} ${DISK}"
-mkfile -n ${DISK_SIZE} ${DISK}
+echo "creating a ${DISK_SIZE} ${DISK_IMAGE}"
+mkfile -n ${DISK_SIZE} ${DISK_IMAGE}
 
 dd if=/dev/zero of=tmp.iso bs=$[4*1024] count=1
 dd if="$1" bs=$[4*1024] skip=1 >> tmp.iso
@@ -65,7 +65,7 @@ sudo xhyve \
     -s 0,hostbridge \
     -s 2,virtio-net \
     -s "3,ahci-cd,$1" \
-    -s 4,virtio-blk,${DISK} \
+    -s 4,virtio-blk,${DISK_IMAGE} \
     -s 31,lpc \
     -l com1,stdio \
     -f "kexec,boot/vmlinuz,boot/archiso.img,archisobasedir=arch archisolabel=$label console=ttyS0"
