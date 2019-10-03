@@ -5,7 +5,7 @@ g
 n
 1
 
-+200M
++100M
 t
 1
 
@@ -30,15 +30,27 @@ __EOF__
 
 
 mkfs.fat -F32 /dev/vda1
-mkfs.ext4  /dev/vda2
+mkfs.ext4 /dev/vda2
 mkswap /dev/vda3
 swapon /dev/vda3
 
 mount /dev/vda2 /mnt
-#mount /dev/vda1 /mnt/boot
+mkdir /mnt/boot
+mount /dev/vda1 /mnt/boot
 
-# pacstrap /mnt base
-# genfstab -U /mnt >> /mnt/etc/fstab
-# arch-chroot /mnt
-# passwd
-# exit
+sed -i 's/^MODULES=\(.*\)/MODULES=\(virtio_blk\)/' /etc/mkinitcpio.conf
+
+pacstrap /mnt base
+genfstab -U /mnt >> /mnt/etc/fstab
+
+mkdir -p /mnt/root/.ssh
+cat >/mnt/root/.ssh/authorized_keys<<EOF
+ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPzHP3wE8qlmB9QLwKMK5dIb/Azej+aIg6UmL6YRoHE51ISI4SQc6gBYCfucB9isVns/ucejDRdVQBtthZd/RTM= markus@pro
+EOF
+
+arch-chroot /mnt
+passwd
+exit
+
+ifconfig -a
+systemctl start sshd

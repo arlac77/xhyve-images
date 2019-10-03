@@ -1,21 +1,8 @@
 #!/bin/bash
 #
 # Usage 
-# install-arch.sh ./archlinux-2018.11.01-x86_64.iso
+# arch-install.sh ./archlinux-2018.11.01-x86_64.iso
 
-# first you neeed to patch xhyve with this 
-# index 61aeebb..39a9c4b 100644
-# --- a/src/firmware/kexec.c
-# +++ b/src/firmware/kexec.c
-# @@ -185,6 +185,7 @@ kexec_load_ramdisk(char *path) {
-#         fseek(f, 0, SEEK_SET);
-#
-#         ramdisk_start = ALIGNUP((kernel.base + kernel.size), 0x1000ull);
-# + ramdisk_start += (uint32_t) 16777216;
-#
-#         if ((ramdisk_start + sz) > memory.size) {
-#                 /* not enough memory */
-#
 #
 # perform normal Arch installation the hard drive is located at /dev/vda
 # create a /boot /dev/vda1 of type vfat (type W95 FAT b)
@@ -34,7 +21,8 @@
 #
 # sudo needed if you want virtio-net
 
-DISK_SIZE=6G
+DISK_SIZE=5G
+DISK=disk.img
 
 set -euo pipefail
 IFS=$'\n\t'
@@ -49,8 +37,8 @@ if [ -f Arch.img ]; then
     exit 1
 fi
 
-echo "creating a ${DISK_SIZE} disk"
-mkfile -n ${DISK_SIZE} Arch.img
+echo "creating a ${DISK_SIZE} ${DISK}"
+mkfile -n ${DISK_SIZE} ${DISK}
 
 dd if=/dev/zero of=tmp.iso bs=$[4*1024] count=1
 dd if="$1" bs=$[4*1024] skip=1 >> tmp.iso
@@ -72,31 +60,12 @@ rm tmp.iso
 
 sudo xhyve \
     -A \
-    -c "1" \
-    -m "1G" \
+    -c 1 \
+    -m 2G \
     -s 0,hostbridge \
     -s 2,virtio-net \
     -s "3,ahci-cd,$1" \
-    -s 4,virtio-blk,Arch.img \
+    -s 4,virtio-blk,${DISK} \
     -s 31,lpc \
     -l com1,stdio \
     -f "kexec,boot/vmlinuz,boot/archiso.img,archisobasedir=arch archisolabel=$label console=ttyS0"
-
-# fdisk /dev/vda
-# g
-# n 1 +300M
-# n 2 -512M
-# n 3 
-
-# mkfs.fat -F32 /dev/vda1
-# mkfs.ext4  /dev/vda2
-# mkswap /dev/vda3
-# swapon /dev/vda3
-
-# mount /dev/vda2 /mnt
-# mount /dev/vda1 /mnt/boot
-# pacstrap /mnt base
-# genfstab -U /mnt >> /mnt/etc/fstab
-# arch-chroot /mnt
-# passwd
-# exit
