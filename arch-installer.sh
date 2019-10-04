@@ -15,11 +15,9 @@
 #
 # no need to install a bootloader
 #
-# boot your Arch install using start-arch.sh
 #
 # take a snapshot if needed tmutil localsnapshot
 #
-# sudo needed if you want virtio-net
 
 DISK_SIZE=6G
 DISK_IMAGE=linux.img
@@ -60,7 +58,6 @@ label=$(basename $mnt)
 disk=$(echo "$diskinfo" |  cut -d' ' -f1)
 hdiutil eject "$disk"
 rm tmp.iso
-
 
 sudo xhyve \
     -A \

@@ -1,11 +1,10 @@
 
-
-fdisk /dev/vda << __EOF__ >> /dev/null
+fdisk /dev/vda << EOF >> /dev/null
 g
 n
 1
 
-+100M
++80M
 t
 1
 
@@ -26,7 +25,7 @@ t
 19
 
 w
-__EOF__
+EOF
 
 
 mkfs.fat -F32 /dev/vda1
@@ -53,7 +52,7 @@ cat >/mnt/etc/systemd/network/enp0s2.network <<EOF
 Name=enp0s2
 
 [Network]
-DHCP=ipv4
+DHCP=yes
 EOF
 
 cat >/mnt/etc/resolv.conf <<EOF
@@ -63,16 +62,25 @@ search mf.de
 EOF
 
 arch-chroot /mnt
-systemctl start systemd-networkd.service
-systemctl enable systemd-networkd.service
+systemctl enable systemd-networkd
 systemctl set-default multi-user.target
+
+pacman -S openssh python
 systemctl enable sshd
 
 passwd
 
 exit
 
+systemctl start sshd
 
+mkdir -p /root/.ssh
+cat >/root/.ssh/authorized_keys<<EOF
+ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPzHP3wE8qlmB9QLwKMK5dIb/Azej+aIg6UmL6YRoHE51ISI4SQc6gBYCfucB9isVns/ucejDRdVQBtthZd/RTM= markus@pro
+EOF
+
+
+scp "root@192.168.64.7:/mnt/boot/*" .
 
 ip link show dev enp0s2
 ip link set enp0s2 up
@@ -80,6 +88,4 @@ ip address add 192.168.64.2/24 broadcast + dev enp0s2
 
 ip route add 0/32 via 192.168.64.1 dev enp0s2
 
-
 pacman -Syu
-systemctl start sshd
