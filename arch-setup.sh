@@ -4,7 +4,7 @@ g
 n
 1
 
-+80M
++60M
 t
 1
 
@@ -66,6 +66,9 @@ systemctl enable systemd-networkd
 systemctl set-default multi-user.target
 
 pacman -S openssh python
+pacman -S nodejs clang gcc rust go htop npm podman redis nginx
+rm /var/cache/pacman/pkg/*.pkg.tar.xz
+
 systemctl enable sshd
 
 passwd
