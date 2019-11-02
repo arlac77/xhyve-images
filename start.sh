@@ -5,7 +5,8 @@ IFS=$'\n\t'
 
 MACHINE=$1
 
-DISK=${MACHINE}/linux.img
+DISK1=${MACHINE}/linux.img
+DISK2=""
 
 UUID=61CF84A9-E75E-4237-9D21-285EE98D114D
 CPUS=1
@@ -16,19 +17,22 @@ NET=virtio-net
 
 . ${MACHINE}/settings.ini
 
-NET_PCI="-s 2,${NET},tap0,mac=${MAC}"
+NET_OPTIONS="-s 2,${NET},tap0,mac=${MAC}"
 
-echo ${NET_PCI}
+DISK_OPTIONS="-s 4,virtio-blk,${DISK1}"
 
-#exit
+if [ "${DISK2}" != "" ]
+then
+  DISK_OPTIONS+=" -s 5,virtio-blk,${DISK2}"
+fi
 
 sudo xhyve \
     -A \
     -c ${CPUS} \
     -m ${MEMORY} \
     -s 0,hostbridge \
-    ${NET_PCI} \
-    -s 4,virtio-blk,${DISK} \
+    ${NET_OPTIONS} \
+    ${DISK_OPTIONS} \
     -s 31,lpc \
     -l com1,stdio \
     -U ${UUID} \
