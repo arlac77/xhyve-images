@@ -3,12 +3,11 @@
 # http://www.admin-magazin.de/Online-Artikel/CentOS-virtualisiert-in-Xhyve-auf-OS-X
 # https://www.notfound.me/archives/18
 
-MAYOR=7
-MINOR=1708
-#MINOR=1611
-VERSION=${MAYOR}.3.${MINOR}
-ISO=CentOS-${MAYOR}-x86_64-Minimal-${MINOR}.iso
-VOLUME="CentOS 7 x86_64"
+MAYOR=8
+MINOR=1905
+VERSION=${MAYOR}.0.${MINOR}
+ISO=CentOS-${MAYOR}-x86_64-${MINOR}-dvd1.iso
+VOLUME="CentOS-${MAYOR}-BaseOS-"
 DEST="centos-${VERSION}"
 IMAGE_SIZE=8
 
@@ -16,7 +15,7 @@ if  [ -f ${ISO} ]
 then
   echo "${ISO} already there"
 else
-  curl -O http://mirror.daniel-jost.net/centos/${MAYOR}/isos/x86_64/${ISO}
+  curl -O http://mirror.infonline.de/centos/${VERSION}/isos/x86_64/${ISO}
 fi
 
 
@@ -49,7 +48,7 @@ fi
 KERNEL="${DEST}/vmlinuz"
 INITRD="${DEST}/initrd.img"
 CMDLINE="earlyprintk=serial console=ttyS0 acpi=off"
-MEM="-m 1G"
+MEM="-m 2G"
 NET="-s 2:0,virtio-net"
 IMG_CD="-s 3,ahci-cd,${ISO}"
 IMG_HDD="-s 4,virtio-blk,${DEST}/hdd.img"
